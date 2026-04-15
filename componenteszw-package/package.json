@@ -1,0 +1,36 @@
+{
+  "name": "componenteszw-package",
+  "version": "1.0.21",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/index.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.500.0",
+    "tailwind-merge": "^2.6.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.2",
+    "vite-plugin-dts": "^4.5.0",
+    "@vitejs/plugin-react": "^4.3.0"
+  }
+}
