@@ -3,6 +3,7 @@ import React, { useState, useMemo } from "react";
 type Column = {
   key: string;
   label: string;
+  render?: (value: any) => React.ReactNode;
 };
 
 type DataRow = {
@@ -37,23 +38,14 @@ export function Table({
       columns.every((col) => {
         const filterValue = filters[col.key]?.toLowerCase() || "";
         if (!filterValue) return true;
-        return String(row[col.key])
-          .toLowerCase()
-          .includes(filterValue);
+        return String(row[col.key]).toLowerCase().includes(filterValue);
       })
     );
   }, [data, filters, columns]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredData.length / itemsPerPage)
-  );
-
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filteredData.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -61,81 +53,80 @@ export function Table({
 
   return (
     <div className={`w-full p-4 ${className}`}>
-      <div className="border rounded-2xl overflow-hidden shadow">
-        <table className="w-full border-collapse">
-          <thead className="bg-gray-100">
+      <div className="border rounded-2xl shadow">
+        <div className="overflow-x-auto rounded-2xl">
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-100">
 
-            {title && (
-              <tr>
-                <th
-                  colSpan={columns.length + 1}
-                  className="text-left p-4 text-lg font-semibold bg-white border-b"
-                >
-                  {title}
-                </th>
-              </tr>
-            )}
-
-            <tr>
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className="text-left p-3 text-sm font-semibold text-gray-600"
-                >
-                  {col.label}
-                </th>
-              ))}
-              <th className="p-3" />
-            </tr>
-
-            <tr>
-              {columns.map((col) => (
-                <th key={col.key} className="p-2">
-                  <input
-                    type="text"
-                    placeholder="Buscar..."
-                    value={filters[col.key] || ""}
-                    onChange={(e) =>
-                      handleFilterChange(col.key, e.target.value)
-                    }
-                    className="w-full px-2 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
-                  />
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentData.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length + 1}
-                  className="p-4 text-center text-sm text-gray-500"
-                >
-                  No hay resultados
-                </td>
-              </tr>
-            ) : (
-              currentData.map((row, i) => (
-                <tr
-                  key={row.id ?? i}
-                  className="border-t hover:bg-gray-50 transition"
-                >
-                  {columns.map((col) => (
-                    <td key={col.key} className="p-3 text-sm">
-                      {row[col.key]}
-                    </td>
-                  ))}
-
-                  <td className="p-3 text-right">•••</td>
+              {title && (
+                <tr>
+                  <th
+                    colSpan={columns.length + 1}
+                    className="text-left p-4 text-lg font-semibold bg-white border-b"
+                  >
+                    {title}
+                  </th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              )}
 
-        <div className="flex items-center justify-between p-3 text-sm">
+              <tr>
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    className="text-left p-3 text-sm font-semibold text-gray-600"
+                  >
+                    {col.label}
+                  </th>
+                ))}
+                <th className="p-3" />
+              </tr>
+
+              <tr className="border-t border-gray-200">
+                {columns.map((col) => (
+                  <th key={col.key} className="p-2">
+                    <input
+                      type="text"
+                      placeholder=""
+                      value={filters[col.key] || ""}
+                      onChange={(e) => handleFilterChange(col.key, e.target.value)}
+                      className="w-full px-2 py-1 border rounded-full text-sm focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </th>
+                ))}
+                <th />
+              </tr>
+            </thead>
+
+            <tbody>
+              {currentData.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={columns.length + 1}
+                    className="p-4 text-center text-sm text-gray-500"
+                  >
+                    No hay resultados
+                  </td>
+                </tr>
+              ) : (
+                currentData.map((row, i) => (
+                  <tr
+                    key={row.id ?? i}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    {columns.map((col) => (
+                      <td key={col.key} className="p-3 text-sm">
+                        {col.render ? col.render(row[col.key]) : row[col.key]}
+                      </td>
+                    ))}
+                    <td className="p-3 text-right">•••</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex items-center justify-between p-3 text-sm border-t border-gray-200">
           <span>
             Mostrando {currentData.length} de {filteredData.length} resultados
           </span>
@@ -154,9 +145,7 @@ export function Table({
                 key={i}
                 onClick={() => goToPage(i + 1)}
                 className={`px-3 py-1 rounded ${
-                  currentPage === i + 1
-                    ? "bg-red-500 text-white"
-                    : "border"
+                  currentPage === i + 1 ? "bg-red-500 text-white" : "border"
                 }`}
               >
                 {i + 1}
