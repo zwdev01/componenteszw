@@ -155,6 +155,7 @@ export function Table({
                 currentData.map((row, i) => {
                   const rowIndex = startIndex + i;
                   const hasActions = Array.isArray(row.actions) && row.actions.length > 0;
+                  const isLastRows = i >= currentData.length - 2;
 
                   return (
                     <tr
@@ -183,7 +184,9 @@ export function Table({
                             {openMenuRow === rowIndex && (
                               <div
                                 ref={menuRef}
-                                className="absolute right-3 top-full mt-1 z-50 min-w-[160px] bg-white border border-gray-200 rounded-lg shadow-lg py-1"
+                                className={`absolute right-3 z-50 min-w-[160px] bg-white border border-gray-200 rounded-lg shadow-lg py-1 ${
+                                  isLastRows ? "bottom-full mb-1" : "top-full mt-1"
+                                }`}
                               >
                                 {row.actions!
                                   .filter((a) => a.isActive !== false)
