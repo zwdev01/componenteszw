@@ -4,14 +4,12 @@ import { cn } from "./lib/utils"
 type CardRowProps = {
   children?: React.ReactNode
   onClick?: () => void
-
-
   className?: string
   contentClassName?: string
   hoverClassName?: string
   skeletonClassName?: string
-
   clickable?: boolean
+  title?: string
 }
 
 export const CardRow: React.FC<CardRowProps> = ({
@@ -22,6 +20,7 @@ export const CardRow: React.FC<CardRowProps> = ({
   hoverClassName,
   skeletonClassName,
   clickable = true,
+  title,
 }) => {
   return (
     <div
@@ -34,6 +33,11 @@ export const CardRow: React.FC<CardRowProps> = ({
         className
       )}
     >
+      {title && (
+        <div className="px-6 py-4 border-b border-gray-200">
+          <span className="font-semibold text-base">{title}</span>
+        </div>
+      )}
       <div
         className={cn(
           "min-h-[72px] px-6 py-4 flex items-center justify-between",

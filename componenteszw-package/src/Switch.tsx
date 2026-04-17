@@ -3,7 +3,8 @@ import React, { useState } from "react";
 type SwitchProps = {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label?: string;
+  labelActivo?: string;
+  labelInactivo?: string;
   disabled?: boolean;
   className?: string;
 };
@@ -11,7 +12,8 @@ type SwitchProps = {
 export function Switch({
   checked = false,
   onChange,
-  label,
+  labelActivo = "Activo",
+  labelInactivo = "Inactivo",
   disabled = false,
   className = "",
 }: SwitchProps) {
@@ -26,29 +28,54 @@ export function Switch({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
+      <span
+        className="text-sm font-medium"
+        style={{ color: isChecked ? '#BB2111' : undefined }}
+      >
+        {labelActivo}
+      </span>
+
       <button
         type="button"
         role="switch"
         aria-checked={isChecked}
         disabled={disabled}
         onClick={handleToggle}
-        className={`
-          relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
-          ${isChecked ? "bg-green-500" : "bg-gray-300"}
-          ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-        `}
+        style={{
+          backgroundColor: '#D1D5DB',
+          height: '28px',
+          width: '56px',
+          borderRadius: '9999px',
+          position: 'relative',
+          display: 'inline-flex',
+          alignItems: 'center',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          opacity: disabled ? 0.5 : 1,
+          border: 'none',
+          outline: 'none',
+          flexShrink: 0,
+        }}
       >
         <span
-          className={`
-            inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200
-            ${isChecked ? "translate-x-6" : "translate-x-1"}
-          `}
+          style={{
+            display: 'inline-block',
+            height: '20px',
+            width: '20px',
+            borderRadius: '9999px',
+            backgroundColor: 'white',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+            transform: isChecked ? 'translateX(4px)' : 'translateX(32px)',
+            transition: 'transform 200ms',
+          }}
         />
       </button>
-      {label && (
-        <span className="text-sm font-medium">{label}</span>
-      )}
+
+      <span
+        className="text-sm font-medium"
+        style={{ color: !isChecked ? '#BB2111' : undefined }}
+      >
+        {labelInactivo}
+      </span>
     </div>
   );
 }

@@ -3,6 +3,13 @@ import { Button } from "./button"
 import { cn } from "./lib/utils"
 
 type ModalVariant = "success" | "error" | "question" | "content"
+type ButtonVariant = "primary" | "secondary" | "destructive"
+
+type ModalAction = {
+  text: string
+  onClick: () => void
+  variant?: ButtonVariant
+}
 
 type ModalProps = {
   open: boolean
@@ -11,21 +18,13 @@ type ModalProps = {
   title: string
   description?: string
   children?: React.ReactNode
-  primaryAction?: {
-    text: string
-    onClick: () => void
-  }
-  secondaryAction?: {
-    text: string
-    onClick: () => void
-  }
+  primaryAction?: ModalAction
+  secondaryAction?: ModalAction
   size?: "small" | "medium" | "large"
-
 
   closeOnOverlayClick?: boolean
   closeOnEsc?: boolean
   hideIcon?: boolean
-
 
   className?: string
   overlayClassName?: string
@@ -65,7 +64,6 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   React.useEffect(() => {
     if (!open) return
-
 
     document.body.style.overflow = "hidden"
 
@@ -181,7 +179,7 @@ export const Modal: React.FC<ModalProps> = ({
             {secondaryAction && (
               <Button
                 text={secondaryAction.text}
-                variant="secondary"
+                variant={secondaryAction.variant ?? "secondary"}
                 onClick={secondaryAction.onClick}
               />
             )}
@@ -189,7 +187,7 @@ export const Modal: React.FC<ModalProps> = ({
             {primaryAction && (
               <Button
                 text={primaryAction.text}
-                variant="primary"
+                variant={primaryAction.variant ?? "primary"}
                 onClick={primaryAction.onClick}
               />
             )}

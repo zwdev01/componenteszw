@@ -15,8 +15,6 @@ type SelectProps = {
   hint?: string;
   value?: string | string[];
   onChange?: (value: any) => void;
-
-
   className?: string;
   triggerClassName?: string;
   dropdownClassName?: string;
@@ -35,7 +33,6 @@ export const Select: React.FC<SelectProps> = ({
   hint,
   value,
   onChange,
-
   className,
   triggerClassName,
   dropdownClassName,
@@ -58,13 +55,11 @@ export const Select: React.FC<SelectProps> = ({
   const handleSelect = (val: string) => {
     if (multiple) {
       let newValue = Array.isArray(value) ? [...value] : [];
-
       if (newValue.includes(val)) {
         newValue = newValue.filter((v) => v !== val);
       } else {
         newValue.push(val);
       }
-
       onChange?.(newValue);
     } else {
       onChange?.(val);
@@ -92,59 +87,67 @@ export const Select: React.FC<SelectProps> = ({
   }, []);
 
   return (
-    <div className={cn("w-[300px] text-sm", className)} ref={ref}>
+    <div className={cn("w-[300px] text-sm relative", className)} ref={ref}>
       {label && (
         <label className={cn("block mb-1 font-medium", labelClassName)}>
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
 
-
       <div
         className={cn(
-          "border rounded-lg px-3 py-2 flex flex-wrap gap-2 items-center cursor-pointer",
+          "border rounded-lg px-3 py-2 flex items-center cursor-pointer justify-between",
           triggerClassName
         )}
         onClick={() => setOpen(!open)}
       >
-        {multiple && Array.isArray(value) ? (
-          value.length > 0 ? (
-            value.map((val) => {
-              const opt = options.find((o) => o.value === val);
-              return (
-                <span
-                  key={val}
-                  className="bg-gray-200 px-2 py-1 rounded flex items-center gap-1"
-                >
-                  {opt?.label}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeItem(val);
-                    }}
+        <span className="flex-1 flex flex-wrap gap-2">
+          {multiple && Array.isArray(value) ? (
+            value.length > 0 ? (
+              value.map((val) => {
+                const opt = options.find((o) => o.value === val);
+                return (
+                  <span
+                    key={val}
+                    className="bg-gray-200 px-2 py-1 rounded flex items-center gap-1"
                   >
-                    ×
-                  </button>
-                </span>
-              );
-            })
-          ) : (
-            <span className="text-gray-400">{placeholder}</span>
-          )
-        ) : (
-          <span>
-            {options.find((o) => o.value === value)?.label || (
+                    {opt?.label}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(val);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })
+            ) : (
               <span className="text-gray-400">{placeholder}</span>
-            )}
-          </span>
-        )}
+            )
+          ) : (
+            <span>
+              {options.find((o) => o.value === value)?.label || (
+                <span className="text-gray-400">{placeholder}</span>
+              )}
+            </span>
+          )}
+        </span>
+        <span style={{ 
+          transition: 'transform 200ms', 
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          marginLeft: '8px',
+          flexShrink: 0,
+        }}>
+          ▾
+        </span>
       </div>
-
 
       {open && (
         <div
           className={cn(
-            "border rounded-lg mt-2 p-2 bg-white shadow",
+            "border rounded-lg mt-2 p-2 bg-white shadow absolute w-full z-50",
             dropdownClassName
           )}
         >
